@@ -1,16 +1,25 @@
 # Slurp - Dating App
 
-A modern Tinder-style dating app built with React Native and Expo.
+A modern Tinder-style dating app with React Native mobile app + Laravel API backend.
 
 ## Tech Stack
 
+### Mobile App
 - **React Native** - Cross-platform mobile development
 - **Expo Router** - File-based routing with native navigation
 - **NativeWind** - Tailwind CSS for React Native
 - **Zustand** - Lightweight state management
-- **Supabase** - Backend as a Service (authentication, database, storage)
 - **TypeScript** - Type-safe JavaScript
 - **Lucide React Native** - Beautiful icon library
+
+### Backend API
+- **Laravel 12** - API backend framework
+- **Filament 4** - Admin dashboard
+- **Laravel Sanctum** - API authentication
+- **Supabase** - PostgreSQL database
+- **Herd** - Local development server
+
+**📖 New to this stack?** See [docs/monorepo-setup-guide.md](docs/monorepo-setup-guide.md) for step-by-step setup instructions.
 
 ## Features
 
@@ -33,40 +42,58 @@ A modern Tinder-style dating app built with React Native and Expo.
 - Photo uploads
 - User preferences
 
-## Project Structure
+## Monorepo Structure
+
+This is a monorepo containing both the mobile app and the API backend:
 
 ```
-/app                   # Expo Router (file-based routing)
-  _layout.tsx          # Root layout with global CSS import
-  index.tsx            # Splash/home screen
-  (auth)/              # Authentication group
-    _layout.tsx
-    login.tsx
-    signup.tsx
-  (tabs)/              # Main app tabs
-    _layout.tsx        # Bottom tab navigator
-    index.tsx          # Discover/swipe screen
-    matches.tsx
-    messages.tsx
-    profile.tsx
-/components
-  /ui                  # Reusable UI components
-/lib
-  supabase.ts          # Supabase client configuration
-/store
-  userStore.ts         # Zustand state management
-/assets                # Images, fonts, etc.
+slurp/
+├── api/                     # Laravel API Backend
+│   ├── app/                 # Laravel application code
+│   ├── config/              # Configuration files
+│   ├── database/            # Migrations, seeds
+│   ├── routes/
+│   │   ├── api.php          # API routes
+│   │   └── web.php          # Web routes (Filament)
+│   ├── .env                 # Laravel environment variables
+│   └── README.md            # API-specific documentation
+│
+├── app/                     # React Native App (Expo Router)
+│   ├── _layout.tsx          # Root layout
+│   ├── index.tsx            # Splash/home screen
+│   ├── (auth)/              # Authentication screens
+│   │   ├── login.tsx
+│   │   └── signup.tsx
+│   └── (tabs)/              # Main app tabs
+│       ├── _layout.tsx
+│       ├── index.tsx        # Discover/swipe
+│       ├── matches.tsx
+│       ├── messages.tsx
+│       └── profile.tsx
+│
+├── components/              # Reusable UI components
+│   └── ui/
+├── lib/                     # Utilities
+│   └── supabase.ts
+├── store/                   # Zustand state management
+│   └── userStore.ts
+├── assets/                  # Images, fonts, etc.
+├── docs/                    # Documentation
+│   └── monorepo-setup-guide.md
+├── .env                     # React Native environment variables
+└── README.md                # This file
 ```
 
 ## Setup Instructions
 
 ### Prerequisites
 - Node.js 18+ installed
-- npm or yarn
+- PHP 8.2+ and Composer installed
+- Herd (or Laravel Valet/Sail) for local Laravel development
 - Expo Go app on your phone (for testing)
 - Git
 
-### Installation
+### Mobile App Setup
 
 1. **Clone the repository**
    ```bash
@@ -83,20 +110,41 @@ A modern Tinder-style dating app built with React Native and Expo.
    ```bash
    cp .env.example .env
    ```
-   Then edit `.env` and add your Supabase credentials (when ready):
-   ```
-   EXPO_PUBLIC_SUPABASE_URL=your-supabase-project-url
-   EXPO_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-   ```
+   The `.env` file is already configured with:
+   - `EXPO_PUBLIC_API_URL` - Points to local Laravel API
+   - Supabase credentials
 
 4. **Start the development server**
    ```bash
-   npx expo start
-   ```
-   or
-   ```bash
    npm start
    ```
+
+### API Backend Setup
+
+See [api/README.md](api/README.md) for detailed backend setup instructions.
+
+**Quick start:**
+
+1. **Configure Herd**
+   ```bash
+   cd api
+   herd link slurp
+   ```
+   Your API will be available at `http://slurp.test`
+
+2. **Run migrations**
+   ```bash
+   php artisan migrate:fresh
+   ```
+
+3. **Create admin user**
+   ```bash
+   php artisan make:filament-user
+   ```
+
+4. **Access admin panel**
+   - Admin: http://slurp.test/admin
+   - API Health: http://slurp.test/api/health
 
 ### Running the App
 
@@ -165,6 +213,32 @@ function Component() {
   // Use state...
 }
 ```
+
+## Deployment
+
+### Backend (Laravel API)
+Deploy the Laravel API using **Ploi**:
+1. Point Ploi to this repository
+2. Set web root to `/api/public`
+3. Configure environment variables in Ploi
+4. Push to deploy automatically
+
+See [api/README.md](api/README.md#deployment-ploi) for detailed Ploi configuration.
+
+### Mobile App
+Build and publish using **Expo EAS**:
+```bash
+# Install EAS CLI
+npm install -g eas-cli
+
+# Build for production
+eas build --platform all
+
+# Submit to app stores
+eas submit --platform all
+```
+
+Update `EXPO_PUBLIC_API_URL` in production build to point to your deployed API.
 
 ## Contributing
 

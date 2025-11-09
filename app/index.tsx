@@ -1,9 +1,28 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { useEffect } from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { Flame } from "lucide-react-native";
+import { useUserStore } from "@/store/userStore";
 
 export default function Index() {
   const router = useRouter();
+  const { isAuthenticated, isLoading } = useUserStore();
+
+  useEffect(() => {
+    // Redirect to tabs if already authenticated
+    if (!isLoading && isAuthenticated) {
+      router.replace("/(tabs)");
+    }
+  }, [isAuthenticated, isLoading]);
+
+  // Show loading while checking session
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-background items-center justify-center">
+        <ActivityIndicator size="large" color="#FF4458" />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-background items-center justify-center px-8">

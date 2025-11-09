@@ -43,3 +43,25 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Laravel
+/api/vendor/
+/api/node_modules/
+/api/.env
+/api/storage/*.key
+/api/storage/app/*
+!/api/storage/app/.gitignore
+/api/storage/framework/cache/*
+!/api/storage/framework/cache/.gitignore
+/api/storage/framework/sessions/*
+!/api/storage/framework/sessions/.gitignore
+/api/storage/framework/testing/*
+!/api/storage/framework/testing/.gitignore
+/api/storage/framework/views/*
+!/api/storage/framework/views/.gitignore
+/api/storage/logs/*
+!/api/storage/logs/.gitignore
+/api/bootstrap/cache/*
+!/api/bootstrap/cache/.gitignore
+/api/.phpunit.result.cache
+/api/auth.json
